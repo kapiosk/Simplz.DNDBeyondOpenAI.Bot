@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simplz.DNDBeyondOpenAI.Bot", "Simplz.DNDBeyondOpenAI.Bot.csproj", "{78D13A9D-E1D0-4095-B210-8EE746116C27}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78D13A9D-E1D0-4095-B210-8EE746116C27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78D13A9D-E1D0-4095-B210-8EE746116C27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78D13A9D-E1D0-4095-B210-8EE746116C27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78D13A9D-E1D0-4095-B210-8EE746116C27}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2E41A01A-10BD-4D94-904A-D358AC343067}
+	EndGlobalSection
+EndGlobal
