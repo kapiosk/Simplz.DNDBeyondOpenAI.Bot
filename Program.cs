@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Simplz.DNDBeyondOpenAI.Bot.Components;
 using Simplz.DNDBeyondOpenAI.Bot.Data;
 
@@ -7,7 +8,7 @@ builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddDbContextFactory<GameContext>();
+builder.Services.AddDbContextFactory<GameContext>(o => o.UseSqlite($"Data Source={Path.Join("Temp", "Game.db")}"));
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 builder.Services.AddBlazorBootstrap();
