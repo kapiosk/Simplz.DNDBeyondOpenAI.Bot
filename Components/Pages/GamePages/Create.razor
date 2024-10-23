@@ -1,0 +1,49 @@
+@page "/games/create"
+@using Microsoft.EntityFrameworkCore
+@using Simplz.DNDBeyondOpenAI.Bot.Data
+@inject IDbContextFactory<Simplz.DNDBeyondOpenAI.Bot.Data.GameContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Game</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Game" OnValidSubmit="AddGame" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="Game.Name" class="form-control" /> 
+                <ValidationMessage For="() => Game.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label> 
+                <InputText id="description" @bind-Value="Game.Description" class="form-control" /> 
+                <ValidationMessage For="() => Game.Description" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/games">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Game Game { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddGame()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Games.Add(Game);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/games");
+    }
+}

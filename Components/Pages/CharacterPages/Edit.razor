@@ -1,0 +1,94 @@
+@page "/characters/edit"
+@using Microsoft.EntityFrameworkCore
+@using Simplz.DNDBeyondOpenAI.Bot.Data
+@inject IDbContextFactory<Simplz.DNDBeyondOpenAI.Bot.Data.GameContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Character</h2>
+<hr />
+@if (Character is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Character" OnValidSubmit="UpdateCharacter" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="Character.Id" value="@Character.Id" />
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="Character.Name" class="form-control" />
+                    <ValidationMessage For="() => Character.Name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputText id="description" @bind-Value="Character.Description" class="form-control" />
+                    <ValidationMessage For="() => Character.Description" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/characters">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Character? Character { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Character ??= await context.Characters.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Character is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateCharacter()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Character!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!CharacterExists(Character!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/characters");
+    }
+
+    private bool CharacterExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Characters.Any(e => e.Id == id);
+    }
+}

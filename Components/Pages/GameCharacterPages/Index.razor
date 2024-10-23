@@ -1,0 +1,34 @@
+@page "/gamecharacters"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Simplz.DNDBeyondOpenAI.Bot.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<Simplz.DNDBeyondOpenAI.Bot.Data.GameContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="gamecharacters/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.GameCharacters">
+
+    <TemplateColumn Context="gamecharacter">
+        <a href="@($"gamecharacters/edit?gameid={gamecharacter.GameId}")">Edit</a> |
+        <a href="@($"gamecharacters/details?gameid={gamecharacter.GameId}")">Details</a> |
+        <a href="@($"gamecharacters/delete?gameid={gamecharacter.GameId}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private GameContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

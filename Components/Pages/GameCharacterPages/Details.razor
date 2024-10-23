@@ -1,0 +1,44 @@
+@page "/gamecharacters/details"
+@using Microsoft.EntityFrameworkCore
+@using Simplz.DNDBeyondOpenAI.Bot.Data
+@inject IDbContextFactory<Simplz.DNDBeyondOpenAI.Bot.Data.GameContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>GameCharacter</h2>
+    <hr />
+    @if (gamecharacter is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+        </dl>
+        <div>
+            <a href="@($"/gamecharacters/edit?gameid={gamecharacter.GameId}")">Edit</a> |
+            <a href="@($"/gamecharacters")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private GameCharacter? gamecharacter;
+
+    [SupplyParameterFromQuery]
+    private int GameId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        gamecharacter = await context.GameCharacters.FirstOrDefaultAsync(m => m.GameId == GameId);
+
+        if (gamecharacter is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

@@ -1,0 +1,51 @@
+@page "/gamecharacters/delete"
+@using Microsoft.EntityFrameworkCore
+@using Simplz.DNDBeyondOpenAI.Bot.Data
+@inject IDbContextFactory<Simplz.DNDBeyondOpenAI.Bot.Data.GameContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete this?</p>
+<div>
+    <h2>GameCharacter</h2>
+    <hr />
+    @if (gamecharacter is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <EditForm method="post" Model="gamecharacter" OnValidSubmit="DeleteGameCharacter" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(gamecharacter is null)">Delete</button> |
+            <a href="/gamecharacters">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private GameCharacter? gamecharacter;
+
+    [SupplyParameterFromQuery]
+    private int GameId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        gamecharacter = await context.GameCharacters.FirstOrDefaultAsync(m => m.GameId == GameId);
+
+        if (gamecharacter is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task DeleteGameCharacter()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.GameCharacters.Remove(gamecharacter!);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/gamecharacters");
+    }
+}

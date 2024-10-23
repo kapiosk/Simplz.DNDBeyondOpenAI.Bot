@@ -1,0 +1,39 @@
+@page "/gamecharacters/create"
+@using Microsoft.EntityFrameworkCore
+@using Simplz.DNDBeyondOpenAI.Bot.Data
+@inject IDbContextFactory<Simplz.DNDBeyondOpenAI.Bot.Data.GameContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>GameCharacter</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="GameCharacter" OnValidSubmit="AddGameCharacter" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/gamecharacters">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private GameCharacter GameCharacter { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddGameCharacter()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.GameCharacters.Add(GameCharacter);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/gamecharacters");
+    }
+}
